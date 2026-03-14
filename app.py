@@ -841,5 +841,25 @@ def chat():
 # ══════════════════════════════════════════════════════════════
 #  INICIO
 # ══════════════════════════════════════════════════════════════
+
+@app.route('/voz', methods=['POST'])
+@login_required
+def voz():
+    import base64
+    texto = request.json.get('texto', '')
+    ELEVEN_KEY = os.environ.get('ELEVEN_KEY', '')
+    ELEVEN_VOICE = '21m00Tcm4TlvDq8ikWAM'
+    if ELEVEN_OK and ELEVEN_KEY and texto:
+        try:
+            client = ElevenLabs(api_key=ELEVEN_KEY)
+            gen = client.text_to_speech.convert(
+                voice_id=ELEVEN_VOICE, text=texto[:500],
+                model_id='eleven_multilingual_v2')
+            audio = b''.join(gen)
+            return jsonify({'audio': base64.b64encode(audio).decode()})
+        except Exception as e:
+            return jsonify({'error': str(e)})
+    return jsonify({'error': 'Voz no disponible'})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
