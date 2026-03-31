@@ -586,7 +586,7 @@ def chat():
             client = Groq(api_key=GROQ_KEY)
             r = client.chat.completions.create(
                 model='llama-3.3-70b-versatile',
-                messages=[{'role':'system','content':f'Eres Aura, asistente personal de {current_user.nombre} en Barcelona. Respondes en español, de forma natural, cálida y concisa.'}]+msgs,
+                messages=[{'role':'system','content':f'Eres Aura, asistente personal de {current_user.nombre} en Barcelona. Respondes en español, de forma natural y concisa. MUY IMPORTANTE: NUNCA inventes datos, gastos ni información que el usuario no haya dicho. Si no tienes datos reales di honestamente que no los tienes.'}]+msgs,
                 max_tokens=400)
             resp = r.choices[0].message.content
         except Exception as e:
