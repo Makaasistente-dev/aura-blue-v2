@@ -121,6 +121,18 @@ input::placeholder{color:#1e3a5a}
 .div{display:flex;align-items:center;gap:12px;margin:18px 0}
 .div::before,.div::after{content:'';flex:1;height:1px;background:rgba(251,191,36,.1)}
 .div span{font-size:11px;color:#1e3a5a;letter-spacing:2px}
+
+    /* MEJORAS ACCESIBILIDAD */
+    .btn, button, .tool, .btn-mic, .btn-send, .add-btn, .filtro { min-height: 48px !important; min-width: 48px !important; font-size: 18px !important; }
+    .msg, .msg-lbl, .input-area input, .h-card, .h-total-amt { font-size: 18px !important; line-height: 1.5 !important; }
+    .msg.aura, .h-card, .mov-item { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important; }
+    .btn-emergencia { background: linear-gradient(135deg, #ff3366, #cc0033); color: white; font-size: 20px; font-weight: bold; padding: 15px; margin: 10px; border-radius: 50px; animation: pulse 2s infinite; cursor: pointer; border: none; min-height: 60px; }
+    @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,51,102,0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255,51,102,0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,51,102,0); } }
+    .tutorial { position: fixed; bottom: 20px; right: 20px; background: rgba(1,11,31,0.95); border: 1px solid #fbbf24; border-radius: 20px; padding: 15px; max-width: 280px; z-index: 1000; backdrop-filter: blur(10px); animation: slideIn 0.5s ease; }
+    .tutorial h4 { color: #fbbf24; margin: 0 0 10px 0; }
+    .tutorial button { background: #fbbf24; border: none; padding: 8px 16px; border-radius: 20px; margin-top: 10px; cursor: pointer; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    
 </style>
 </head>
 <body>
@@ -188,6 +200,17 @@ async function doRegistro(){
     body:JSON.stringify({nombre,email,password:pass})});
   const d=await r.json();if(d.ok)location='/aura';else err.textContent=d.error||'Error al crear cuenta'}
 </script>
+
+<div id="tutorial" class="tutorial">
+  <h4>✨ Bienvenida a Aura Blue</h4>
+  <p>🎤 Toca el micrófono y habla</p>
+  <p>✍️ O escribe tu mensaje</p>
+  <p>💰 Registra tus gastos en "Hormiga"</p>
+  <p>👨‍👩‍👧‍👦 Agrega contactos de seguridad</p>
+  <p>🆘 Botón rojo para emergencias</p>
+  <button onclick="document.getElementById('tutorial').remove()">Entendido ✓</button>
+</div>
+
 </body>
 </html>"""
 
@@ -317,6 +340,18 @@ body{font-family:'Exo 2',sans-serif;background:var(--bg);color:#fff;
 .fam-card{background:rgba(255,255,255,.04);border:1px solid rgba(251,191,36,.12);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
 .fam-del{background:transparent;border:none;color:#ff4455;cursor:pointer;font-size:15px}
 .hr{border:none;border-top:1px solid rgba(251,191,36,.1);margin:16px 0}
+
+    /* MEJORAS ACCESIBILIDAD */
+    .btn, button, .tool, .btn-mic, .btn-send, .add-btn, .filtro { min-height: 48px !important; min-width: 48px !important; font-size: 18px !important; }
+    .msg, .msg-lbl, .input-area input, .h-card, .h-total-amt { font-size: 18px !important; line-height: 1.5 !important; }
+    .msg.aura, .h-card, .mov-item { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important; }
+    .btn-emergencia { background: linear-gradient(135deg, #ff3366, #cc0033); color: white; font-size: 20px; font-weight: bold; padding: 15px; margin: 10px; border-radius: 50px; animation: pulse 2s infinite; cursor: pointer; border: none; min-height: 60px; }
+    @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,51,102,0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255,51,102,0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,51,102,0); } }
+    .tutorial { position: fixed; bottom: 20px; right: 20px; background: rgba(1,11,31,0.95); border: 1px solid #fbbf24; border-radius: 20px; padding: 15px; max-width: 280px; z-index: 1000; backdrop-filter: blur(10px); animation: slideIn 0.5s ease; }
+    .tutorial h4 { color: #fbbf24; margin: 0 0 10px 0; }
+    .tutorial button { background: #fbbf24; border: none; padding: 8px 16px; border-radius: 20px; margin-top: 10px; cursor: pointer; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    
 </style>
 </head>
 <body>
@@ -523,7 +558,21 @@ async function addGasto(){const concepto=document.getElementById('h-concepto').v
   if(!concepto||isNaN(monto)||monto<=0){alert('Rellena concepto y monto');return}
   await fetch('/gastos/agregar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({concepto,monto})});
   document.getElementById('h-concepto').value='';document.getElementById('h-monto').value='';cargarGastos()}
-async function actualizarPaneles(){const r=await fetch('/familia/lista'),d=await r.json();
+async function emergencia() {
+  if(confirm('⚠️ ¿ACTIVAR EMERGENCIA? Se notificará a tus contactos de seguridad.')) {
+    addMsg('🚨 ¡EMERGENCIA ACTIVADA! Notificando a tus contactos...', 'user');
+    fetch('/emergencia', {method: 'POST'})
+      .then(r => r.json())
+      .then(d => {
+        if(d.ok) addMsg('✅ Contactos notificados. Permanece en tu ubicación.', 'aura');
+        else addMsg('❌ Error: ' + d.error, 'aura');
+      })
+      .catch(() => addMsg('❌ Error al enviar alerta', 'aura'));
+    hablar('Emergencia activada. Se ha notificado a tus contactos de seguridad.');
+  }
+}
+
+function actualizarPaneles(){const r=await fetch('/familia/lista'),d=await r.json();
   if(d.length>0)document.getElementById('p-familia').textContent=d.length+' seguros';
   else document.getElementById('p-familia').textContent='Sin contactos';
   const r2=await fetch('/gastos/lista'),g2=await r2.json();
@@ -532,6 +581,17 @@ async function actualizarPaneles(){const r=await fetch('/familia/lista'),d=await
 if('speechSynthesis' in window)window.speechSynthesis.getVoices();
 actualizarPaneles();
 </script>
+
+<div id="tutorial" class="tutorial">
+  <h4>✨ Bienvenida a Aura Blue</h4>
+  <p>🎤 Toca el micrófono y habla</p>
+  <p>✍️ O escribe tu mensaje</p>
+  <p>💰 Registra tus gastos en "Hormiga"</p>
+  <p>👨‍👩‍👧‍👦 Agrega contactos de seguridad</p>
+  <p>🆘 Botón rojo para emergencias</p>
+  <button onclick="document.getElementById('tutorial').remove()">Entendido ✓</button>
+</div>
+
 </body>
 </html>"""
 
