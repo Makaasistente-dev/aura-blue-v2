@@ -76,7 +76,11 @@ HTML_LOGIN = r"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aura Blue</title>
+<title>Aurah Blue</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&family=Exo+2:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -710,6 +714,19 @@ def familia_borrar(fid):
     f = Familiar.query.filter_by(id=fid, usuario_id=current_user.id).first()
     if f: db.session.delete(f); db.session.commit()
     return jsonify({'ok': True})
+
+
+@app.route('/manifest.json')
+def manifest():
+    import json
+    data = json.load(open('manifest.json'))
+    from flask import Response
+    return Response(json.dumps(data), mimetype='application/json')
+
+@app.route('/icon-<size>.png')
+def icon(size):
+    from flask import send_file
+    return send_file(f'icon-{size}.png', mimetype='image/png')
 
 if __name__ == '__main__':
     ensure_tables()
